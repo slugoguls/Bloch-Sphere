@@ -2,6 +2,13 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "Shader.h"
+#include "Sphere.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
@@ -42,6 +49,22 @@ int main()
         return -1;
     }
 
+    // configure global opengl state
+    // -----------------------------
+    glEnable(GL_DEPTH_TEST);
+
+    // build and compile our shader program
+    // ------------------------------------
+    Shader ourShader("C:/Users/ASD/Desktop/Bloch Sphere/Bloch-Sphere/resources/vertex.vert", "C:/Users/ASD/Desktop/Bloch Sphere/Bloch-Sphere/resources/fragment.frag");
+
+    // create the sphere
+    // -----------------
+    Sphere sphere(1.0f, 20, 20);
+
+    // set polygon mode to wireframe
+    // -----------------------------
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
@@ -52,8 +75,23 @@ int main()
 
         // render
         // ------
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // activate shader
+        ourShader.use();
+
+        // create transformations
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        ourShader.setMat4("projection", projection);
+        ourShader.setMat4("view", view);
+
+        glm::mat4 model = glm::mat4(1.0f);
+        ourShader.setMat4("model", model);
+
+        // render the sphere
+        sphere.draw();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
