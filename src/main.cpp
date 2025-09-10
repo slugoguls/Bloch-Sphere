@@ -8,13 +8,22 @@
 
 #include "Shader.h"
 #include "Sphere.h"
+#include "Axes.h"
+#include "Camera.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void processInput(GLFWwindow *window);
 
 // Settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+
+// Camera
+Camera camera(5.0f);
+float lastX = SCR_WIDTH / 2.0f;
+float lastY = SCR_HEIGHT / 2.0f;
+bool firstMouse = true;
 
 int main()
 {
@@ -40,6 +49,10 @@ int main()
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+
+    // tell GLFW to capture our mouse
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -53,17 +66,15 @@ int main()
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
 
-    // build and compile our shader program
-    // ------------------------------------
-    Shader ourShader("C:/Users/ASD/Desktop/Bloch Sphere/Bloch-Sphere/resources/vertex.vert", "C:/Users/ASD/Desktop/Bloch Sphere/Bloch-Sphere/resources/fragment.frag");
+    // build and compile our shader programs
+    // -------------------------------------
+    Shader sphereShader("C:/Users/ASD/Desktop/Bloch Sphere/Bloch-Sphere/resources/vertex.vert", "C:/Users/ASD/Desktop/Bloch Sphere/Bloch-Sphere/resources/fragment.frag");
+    Shader axesShader("C:/Users/ASD/Desktop/Bloch Sphere/Bloch-Sphere/resources/axes.vert", "C:/Users/ASD/Desktop/Bloch Sphere/Bloch-Sphere/resources/axes.frag");
 
-    // create the sphere
-    // -----------------
+    // create the objects
+    // ------------------
     Sphere sphere(1.0f, 20, 20);
-
-    // set polygon mode to wireframe
-    // -----------------------------
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    Axes axes(1.5f);
 
     // render loop
     // -----------
@@ -78,20 +89,21 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // activate shader
-        ourShader.use();
-
         // create transformations
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        ourShader.setMat4("projection", projection);
-        ourShader.setMat4("view", view);
-
+        glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 model = glm::mat4(1.0f);
-        ourShader.setMat4("model", model);
 
         // render the sphere
+        sphereShader.use();
+        sphereShader.setMat4("projection", projection);
+        sphereShader.setMat4("view", view);
+        sphereShader.setMat4("model", model);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         sphere.draw();
+
+        // render the axes
+        axes.draw(axesShader, view, projection);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -117,7 +129,28 @@ void processInput(GLFWwindow *window)
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+}
+
+// glfw: whenever the mouse moves, this callback is called
+// -------------------------------------------------------
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
+{
+    float xpos = static_cast<float>(xposIn);
+    float ypos = static_cast<float>(yposIn);
+
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+    lastX = xpos;
+    lastY = ypos;
+
+    camera.ProcessMouseMovement(xoffset, yoffset);
 }
