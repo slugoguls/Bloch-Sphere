@@ -10,10 +10,13 @@ glm::mat4 Camera::GetViewMatrix()
     return glm::lookAt(Position, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-void Camera::ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch)
+void Camera::ProcessMouseMovement(float xoffset, float yoffset, float sensitivity, bool constrainPitch)
 {
-    Yaw += xoffset * 0.25f;
-    Pitch += yoffset * 0.25f;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    Yaw += xoffset;
+    Pitch += yoffset;
 
     if (constrainPitch)
     {

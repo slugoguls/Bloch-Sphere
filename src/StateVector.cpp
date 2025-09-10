@@ -62,5 +62,10 @@ void StateVector::draw(const Shader& shader, const glm::mat4& view, const glm::m
 
     glBindVertexArray(m_VAO);
     glDrawArrays(GL_LINES, 0, 2);
+
+    // Draw a point at the tip of the vector
+    glPointSize(10.0f); // Set point size
+    glDrawArrays(GL_POINTS, 1, 1); // Draw only the second vertex (the tip)
+
     glBindVertexArray(0);
 }
