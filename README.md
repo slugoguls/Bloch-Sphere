@@ -43,3 +43,11 @@ If you wish to build the project from source, you will need CMake and a C++ comp
 *   Application of Pauli X, Y, Z gates.
 *   Real-time display of the quantum state in Dirac notation.
 
+## Screenshots
+
+![Bloch Sphere Screenshot 1](p1.png)
+![Bloch Sphere Screenshot 2](p2.png)
+
+## Check out the video
+
+[Watch on YouTube](https://www.youtube.com/watch?v=9Fq4OzZ4s8Q)
