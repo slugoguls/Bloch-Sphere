@@ -45,3 +45,19 @@ target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC
 
 target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE glm glfw 
 	glad stb_image stb_truetype imgui)
+
+# Install executable
+install(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION bin)
+
+# Install resources
+install(DIRECTORY resources/ DESTINATION bin/resources)
+
+# Include CPack
+include(CPack)
+
+# CPack configuration
+set(CPACK_PACKAGE_NAME "BlochSphere")
+set(CPACK_PACKAGE_VERSION "1.0.0")
+set(CPACK_GENERATOR "ZIP") # Or NSIS for a Windows installer
+set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
+set(CPACK_INSTALL_DIRECTORY "BlochSphere")
