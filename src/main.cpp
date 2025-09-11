@@ -31,8 +31,8 @@ void GLAPIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenu
 void cartesianToSpherical(glm::vec3 cartesian, float& theta, float& phi);
 
 // Settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+unsigned int SCR_WIDTH = 800;
+unsigned int SCR_HEIGHT = 600;
 
 // Camera
 Camera camera(5.0f);
@@ -335,6 +335,8 @@ void glfw_error_callback(int error, const char* description)
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
+    SCR_WIDTH = width;
+    SCR_HEIGHT = height;
 }
 
 // glfw: whenever the mouse moves, this callback is called
