@@ -44,6 +44,7 @@ float mouseSensitivity = 0.25f;
 // Bloch Sphere State
 float theta = 0.0f; // Polar angle (0 to PI)
 float phi = 0.0f;   // Azimuthal angle (0 to 2*PI)
+float line_thickness = 1.0f;
 
 int main()
 {
@@ -159,7 +160,7 @@ int main()
         sphere.draw();
 
         // render the axes
-        axes.draw(axesShader, view, projection);
+        axes.draw(axesShader, view, projection, line_thickness);
 
         // render the state vector
         stateVector.update(theta, phi);
@@ -252,6 +253,10 @@ int main()
             phi = glm::degrees(phi);
         }
 
+        ImGui::End();
+
+        ImGui::Begin("Axis Controls");
+        ImGui::SliderFloat("Axis Thickness", &line_thickness, 1.0f, 10.0f);
         ImGui::End();
 
         // Render axis labels

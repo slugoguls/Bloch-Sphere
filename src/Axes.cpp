@@ -31,8 +31,9 @@ Axes::Axes(float length) : m_length(length)
     glBindVertexArray(0);
 }
 
-void Axes::draw(const Shader& shader, const glm::mat4& view, const glm::mat4& projection)
+void Axes::draw(const Shader& shader, const glm::mat4& view, const glm::mat4& projection, float thickness)
 {
+    glLineWidth(thickness); // Set line thickness
     shader.use();
     shader.setMat4("view", view);
     shader.setMat4("projection", projection);
