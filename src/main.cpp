@@ -185,8 +185,12 @@ int main()
         ImGui::Begin("Bloch Sphere Controls");
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-        ImGui::SliderFloat("Theta (deg)", &theta, 0.0f, 180.0f);
-        ImGui::SliderFloat("Phi (deg)", &phi, 0.0f, 360.0f);
+        if (ImGui::SliderFloat("Theta (deg)", &theta, 0.0f, 180.0f)) {
+            stateVector.hidePrevious();
+        }
+        if (ImGui::SliderFloat("Phi (deg)", &phi, 0.0f, 360.0f)) {
+            stateVector.hidePrevious();
+        }
 
         ImGui::SliderFloat("Mouse Sensitivity", &mouseSensitivity, 0.01f, 1.0f);
 
@@ -194,6 +198,7 @@ int main()
         ImGui::Text("Apply Pauli Gates");
         if (ImGui::Button("Pauli X"))
         {
+            stateVector.storePreviousState();
             // Convert current spherical to Cartesian
             float currentRadTheta = glm::radians(theta);
             float currentRadPhi = glm::radians(phi);
@@ -214,6 +219,7 @@ int main()
         }
         if (ImGui::Button("Pauli Y"))
         {
+            stateVector.storePreviousState();
             // Convert current spherical to Cartesian
             float currentRadTheta = glm::radians(theta);
             float currentRadPhi = glm::radians(phi);
@@ -234,6 +240,7 @@ int main()
         }
         if (ImGui::Button("Pauli Z"))
         {
+            stateVector.storePreviousState();
             // Convert current spherical to Cartesian
             float currentRadTheta = glm::radians(theta);
             float currentRadPhi = glm::radians(phi);
