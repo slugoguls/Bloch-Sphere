@@ -178,7 +178,7 @@ int main()
 
         // ImGui State Display
         ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, 0), ImGuiCond_Always, ImVec2(0.5f, 0));
-        ImGui::Begin("State Display", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove);
+        ImGui::Begin("State Display", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
         ImGui::Text("|psi> = (%.2f)|0> + (%.2f + %.2fi)|1>", alpha_real, beta_real, beta_imag);
         ImGui::End();
 
@@ -267,36 +267,25 @@ int main()
         ImGui::End();
 
         // Render axis labels
-        // The positions are fixed in screen space
-        ImGui::SetNextWindowPos(ImVec2(SCR_WIDTH / 2.0f - 10, 10));
-        ImGui::Begin("Z Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
-        ImGui::Text("|0>");
-        ImGui::End();
+        glm::mat4 identityModel = glm::mat4(1.0f);
+        glm::vec4 viewport = glm::vec4(0.0f, 0.0f, (float)SCR_WIDTH, (float)SCR_HEIGHT);
 
-        ImGui::SetNextWindowPos(ImVec2(SCR_WIDTH / 2.0f - 10, SCR_HEIGHT - 30));
-        ImGui::Begin("Neg Z Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
-        ImGui::Text("|1>");
-        ImGui::End();
+        auto draw_label_if_visible = [&](const char* id, const glm::vec3& pos_3d, const char* text) {
+            glm::vec3 screen_pos = glm::project(pos_3d, identityModel, pvMatrix, viewport);
+            if (screen_pos.z < 1.0f) {
+                ImGui::SetNextWindowPos(ImVec2(screen_pos.x, screen_pos.y), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+                ImGui::Begin(id, nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
+                ImGui::Text(text);
+                ImGui::End();
+            }
+        };
 
-        ImGui::SetNextWindowPos(ImVec2(SCR_WIDTH - 200, SCR_HEIGHT / 2.0f - 10));
-        ImGui::Begin("X Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
-        ImGui::Text("(|0> + |1>)/sqrt(2)");
-        ImGui::End();
-
-        ImGui::SetNextWindowPos(ImVec2(10, SCR_HEIGHT / 2.0f - 10));
-        ImGui::Begin("Neg X Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
-        ImGui::Text("(|0> - |1>)/sqrt(2)");
-        ImGui::End();
-
-        ImGui::SetNextWindowPos(ImVec2(SCR_WIDTH / 2.0f + 150, SCR_HEIGHT / 2.0f - 50));
-        ImGui::Begin("Y Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
-        ImGui::Text("(|0> + i|1>)/sqrt(2)");
-        ImGui::End();
-
-        ImGui::SetNextWindowPos(ImVec2(SCR_WIDTH / 2.0f - 250, SCR_HEIGHT / 2.0f + 50));
-        ImGui::Begin("Neg Y Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
-        ImGui::Text("(|0> - i|1>)/sqrt(2)");
-        ImGui::End();
+        draw_label_if_visible("X Label", glm::vec3(1.5f, 0.0f, 0.0f), "(|0> + |1>)/sqrt(2)");
+        draw_label_if_visible("Y Label", glm::vec3(0.0f, 1.5f, 0.0f), "|0>");
+        draw_label_if_visible("Z Label", glm::vec3(0.0f, 0.0f, 1.5f), "(|0> + i|1>)/sqrt(2)");
+        draw_label_if_visible("Neg X Label", glm::vec3(-1.5f, 0.0f, 0.0f), "(|0> - |1>)/sqrt(2)");
+        draw_label_if_visible("Neg Y Label", glm::vec3(0.0f, -1.5f, 0.0f), "|1>");
+        draw_label_if_visible("Neg Z Label", glm::vec3(0.0f, 0.0f, -1.5f), "(|0> - i|1>)/sqrt(2)");
 
         ImGui::Render();
 
