@@ -267,44 +267,35 @@ int main()
         ImGui::End();
 
         // Render axis labels
-        glm::mat4 identityModel = glm::mat4(1.0f);
-        glm::vec3 xAxisEnd = glm::project(glm::vec3(1.5f, 0.0f, 0.0f), identityModel, pvMatrix, glm::vec4(0.0f, 0.0f, (float)SCR_WIDTH, (float)SCR_HEIGHT));
-        glm::vec3 yAxisEnd = glm::project(glm::vec3(0.0f, 1.5f, 0.0f), identityModel, pvMatrix, glm::vec4(0.0f, 0.0f, (float)SCR_WIDTH, (float)SCR_HEIGHT));
-        glm::vec3 zAxisEnd = glm::project(glm::vec3(0.0f, 0.0f, 1.5f), identityModel, pvMatrix, glm::vec4(0.0f, 0.0f, (float)SCR_WIDTH, (float)SCR_HEIGHT));
-
-        ImGui::SetNextWindowPos(ImVec2(xAxisEnd.x + 10, xAxisEnd.y + 10));
-        ImGui::Begin("X Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
-        ImGui::Text("|0> + |1>");
-        ImGui::End();
-
-        ImGui::SetNextWindowPos(ImVec2(yAxisEnd.x + 10, yAxisEnd.y + 10));
-        ImGui::Begin("Y Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
-        ImGui::Text("|0> + i|1>");
-        ImGui::End();
-
-        ImGui::SetNextWindowPos(ImVec2(zAxisEnd.x + 10, zAxisEnd.y + 10));
+        // The positions are fixed in screen space
+        ImGui::SetNextWindowPos(ImVec2(SCR_WIDTH / 2.0f - 10, 10));
         ImGui::Begin("Z Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
         ImGui::Text("|0>");
         ImGui::End();
 
-        // Negative axis labels
-        glm::vec3 negXAxisEnd = glm::project(glm::vec3(-1.5f, 0.0f, 0.0f), identityModel, pvMatrix, glm::vec4(0.0f, 0.0f, (float)SCR_WIDTH, (float)SCR_HEIGHT));
-        glm::vec3 negYAxisEnd = glm::project(glm::vec3(0.0f, -1.5f, 0.0f), identityModel, pvMatrix, glm::vec4(0.0f, 0.0f, (float)SCR_WIDTH, (float)SCR_HEIGHT));
-        glm::vec3 negZAxisEnd = glm::project(glm::vec3(0.0f, 0.0f, -1.5f), identityModel, pvMatrix, glm::vec4(0.0f, 0.0f, (float)SCR_WIDTH, (float)SCR_HEIGHT));
-
-        ImGui::SetNextWindowPos(ImVec2(negXAxisEnd.x + 10, negXAxisEnd.y + 10));
-        ImGui::Begin("Neg X Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
-        ImGui::Text("|0> - |1>");
-        ImGui::End();
-
-        ImGui::SetNextWindowPos(ImVec2(negYAxisEnd.x + 10, negYAxisEnd.y + 10));
-        ImGui::Begin("Neg Y Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
-        ImGui::Text("|0> - i|1>");
-        ImGui::End();
-
-        ImGui::SetNextWindowPos(ImVec2(negZAxisEnd.x + 10, negZAxisEnd.y + 10));
+        ImGui::SetNextWindowPos(ImVec2(SCR_WIDTH / 2.0f - 10, SCR_HEIGHT - 30));
         ImGui::Begin("Neg Z Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
         ImGui::Text("|1>");
+        ImGui::End();
+
+        ImGui::SetNextWindowPos(ImVec2(SCR_WIDTH - 200, SCR_HEIGHT / 2.0f - 10));
+        ImGui::Begin("X Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
+        ImGui::Text("(|0> + |1>)/sqrt(2)");
+        ImGui::End();
+
+        ImGui::SetNextWindowPos(ImVec2(10, SCR_HEIGHT / 2.0f - 10));
+        ImGui::Begin("Neg X Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
+        ImGui::Text("(|0> - |1>)/sqrt(2)");
+        ImGui::End();
+
+        ImGui::SetNextWindowPos(ImVec2(SCR_WIDTH / 2.0f + 150, SCR_HEIGHT / 2.0f - 50));
+        ImGui::Begin("Y Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
+        ImGui::Text("(|0> + i|1>)/sqrt(2)");
+        ImGui::End();
+
+        ImGui::SetNextWindowPos(ImVec2(SCR_WIDTH / 2.0f - 250, SCR_HEIGHT / 2.0f + 50));
+        ImGui::Begin("Neg Y Label", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
+        ImGui::Text("(|0> - i|1>)/sqrt(2)");
         ImGui::End();
 
         ImGui::Render();
