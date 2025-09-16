@@ -228,8 +228,8 @@ int main()
             currentCartesian.y = cos(currentRadTheta);
             currentCartesian.z = sin(currentRadTheta) * sin(currentRadPhi);
 
-            // Apply Pauli Y transformation (x, y, z) -> (-x, y, -z)
-            glm::vec3 transformedCartesian = glm::vec3(-currentCartesian.x, currentCartesian.y, -currentCartesian.z);
+            // Apply Pauli Z transformation (x, y, z) -> (-x, -y, z)
+            glm::vec3 transformedCartesian = glm::vec3(-currentCartesian.x, -currentCartesian.y, currentCartesian.z);
 
             // Convert back to spherical
             cartesianToSpherical(transformedCartesian, theta, phi);
@@ -249,8 +249,8 @@ int main()
             currentCartesian.y = cos(currentRadTheta);
             currentCartesian.z = sin(currentRadTheta) * sin(currentRadPhi);
 
-            // Apply Pauli Z transformation (x, y, z) -> (-x, -y, z)
-            glm::vec3 transformedCartesian = glm::vec3(-currentCartesian.x, -currentCartesian.y, currentCartesian.z);
+            // Apply Pauli Y transformation (x, y, z) -> (-x, y, -z)
+            glm::vec3 transformedCartesian = glm::vec3(-currentCartesian.x, currentCartesian.y, -currentCartesian.z);
 
             // Convert back to spherical
             cartesianToSpherical(transformedCartesian, theta, phi);
@@ -264,6 +264,10 @@ int main()
 
         ImGui::Begin("Axis Controls");
         ImGui::SliderFloat("Axis Thickness", &line_thickness, 1.0f, 10.0f);
+        static float imgui_scale = 1.0f;
+        if (ImGui::SliderFloat("ImGui Scale", &imgui_scale, 0.5f, 2.0f)) {
+            ImGui::GetIO().FontGlobalScale = imgui_scale;
+        }
         ImGui::End();
 
         // Render axis labels
@@ -280,12 +284,12 @@ int main()
             }
         };
 
-        draw_label_if_visible("X Label", glm::vec3(1.5f, 0.0f, 0.0f), "(|0> + |1>)/sqrt(2)");
-        draw_label_if_visible("Y Label", glm::vec3(0.0f, 1.5f, 0.0f), "|0>");
-        draw_label_if_visible("Z Label", glm::vec3(0.0f, 0.0f, 1.5f), "(|0> + i|1>)/sqrt(2)");
-        draw_label_if_visible("Neg X Label", glm::vec3(-1.5f, 0.0f, 0.0f), "(|0> - |1>)/sqrt(2)");
-        draw_label_if_visible("Neg Y Label", glm::vec3(0.0f, -1.5f, 0.0f), "|1>");
-        draw_label_if_visible("Neg Z Label", glm::vec3(0.0f, 0.0f, -1.5f), "(|0> - i|1>)/sqrt(2)");
+        draw_label_if_visible("X Label", glm::vec3(1.5f, 0.0f, 0.0f), "(|0> - |1>)/sqrt(2)");
+        draw_label_if_visible("Y Label", glm::vec3(0.0f, 1.5f, 0.0f), "|1>");
+        draw_label_if_visible("Z Label", glm::vec3(0.0f, 0.0f, 1.5f), "(|0> - i|1>)/sqrt(2)");
+        draw_label_if_visible("Neg X Label", glm::vec3(-1.5f, 0.0f, 0.0f), "(|0> + |1>)/sqrt(2)");
+        draw_label_if_visible("Neg Y Label", glm::vec3(0.0f, -1.5f, 0.0f), "|0>");
+        draw_label_if_visible("Neg Z Label", glm::vec3(0.0f, 0.0f, -1.5f), "(|0> + i|1>)/sqrt(2)");
 
         ImGui::Render();
 
